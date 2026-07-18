@@ -16,7 +16,8 @@
             </svg>
         </button>
         <div>
-            <h1 class="font-display text-lg font-semibold tracking-tight text-ink">
+            <h1
+                class="font-display text-lg font-semibold tracking-tight text-ink">
                 Overview
             </h1>
             <p class="text-xs text-ink/45">
@@ -71,11 +72,12 @@
                 (click)="toggleMenu()">
                 <div
                     class="flex h-8 w-8 items-center justify-center rounded-full bg-teal font-display text-xs font-semibold text-white">
-                    MA
+                    {{ userInitials() }}
                 </div>
                 <div class="hidden leading-tight sm:block">
                     <p
-                        class="text-sm font-medium text-ink">{{loggedUser()?.name}}</p>
+                        class="text-sm font-medium text-ink">{{loggedUser()?.name
+                        | titlecase }}</p>
                     <p class="text-[11px] text-ink/45">Admin</p>
                 </div>
             </button>
