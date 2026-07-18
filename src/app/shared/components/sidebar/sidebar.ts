@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 interface NavItem {
@@ -14,6 +14,9 @@ interface NavItem {
   styleUrl: './sidebar.css',
 })
 export class Sidebar {
+  isOpen = input(false);
+  closeSidebar = output<void>();
+
   mainNav = signal<NavItem[]>([
     {
       label: 'Dashboard',

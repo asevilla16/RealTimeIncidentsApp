@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Sidebar } from '../../shared/components/sidebar/sidebar';
 import { Navbar } from '../../shared/components/navbar/navbar';
@@ -9,4 +9,6 @@ import { Navbar } from '../../shared/components/navbar/navbar';
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.css',
 })
-export class MainLayout {}
+export class MainLayout {
+  sidebarOpen = signal(false);
+}

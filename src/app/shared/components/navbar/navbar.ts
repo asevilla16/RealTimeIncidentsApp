@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, output, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Auth } from '../../../auth/services/auth';
 
@@ -10,6 +10,8 @@ import { Auth } from '../../../auth/services/auth';
   styleUrl: './navbar.css',
 })
 export class Navbar {
+  menuToggle = output<void>();
+
   private router = inject(Router);
 
   private readonly auth = inject(Auth);
