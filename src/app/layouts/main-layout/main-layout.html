@@ -1,7 +1,9 @@
 <div class="flex h-screen overflow-hidden bg-paper">
-    <app-sidebar />
+    <app-sidebar
+        [isOpen]="sidebarOpen()"
+        (closeSidebar)="sidebarOpen.set(false)" />
     <div class="flex min-w-0 flex-1 flex-col">
-        <app-navbar />
+        <app-navbar (menuToggle)="sidebarOpen.set(!sidebarOpen())" />
         <main class="flex-1 overflow-y-auto px-6 py-6 lg:px-10 lg:py-8">
             <router-outlet />
         </main>

@@ -1,26 +1,49 @@
+@if (isOpen()) {
+<div
+    class="fixed inset-0 z-40 bg-ink/50 lg:hidden"
+    (click)="closeSidebar.emit()"></div>
+}
+
 <aside
-    class="hidden h-full w-60 shrink-0 flex-col justify-between bg-ink text-white lg:flex">
+    class="fixed inset-y-0 left-0 z-50 flex h-full w-60 shrink-0 -translate-x-full flex-col justify-between bg-ink text-white transition-transform duration-200 ease-in-out lg:static lg:z-auto lg:translate-x-0"
+    [class.translate-x-0]="isOpen()">
     <div>
-        <div class="flex items-center gap-2.5 px-5 py-6">
-            <span
-                class="flex h-8 w-8 items-center justify-center rounded-sm bg-amber text-ink">
+        <div class="flex items-center justify-between gap-2.5 px-5 py-6">
+            <div class="flex items-center gap-2.5">
+                <span
+                    class="flex h-8 w-8 items-center justify-center rounded-sm bg-amber text-ink">
+                    <svg
+                        class="h-4.5 w-4.5"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </span>
+                <div class="leading-tight">
+                    <p
+                        class="font-display text-[15px] font-semibold tracking-tight text-white">
+                        Pulse
+                    </p>
+                    <p class="text-[11px] text-white/40">Incident Console</p>
+                </div>
+            </div>
+            <button
+                type="button"
+                class="flex h-8 w-8 items-center justify-center rounded-sm text-white/60 hover:text-white lg:hidden"
+                aria-label="Close menu"
+                (click)="closeSidebar.emit()">
                 <svg
-                    class="h-4.5 w-4.5"
+                    class="h-5 w-5"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2">
-                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke-linecap="round"
-                        stroke-linejoin="round" />
+                    stroke-width="1.75">
+                    <path d="M6 6l12 12M18 6 6 18" stroke-linecap="round" />
                 </svg>
-            </span>
-            <div class="leading-tight">
-                <p
-                    class="font-display text-[15px] font-semibold tracking-tight text-white">
-                    Pulse
-                </p>
-                <p class="text-[11px] text-white/40">Incident Console</p>
-            </div>
+            </button>
         </div>
 
         <nav class="flex flex-col gap-0.5 px-3">

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, output, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Auth } from '../../../auth/services/auth';
 
@@ -10,11 +10,22 @@ import { Auth } from '../../../auth/services/auth';
   styleUrl: './navbar.css',
 })
 export class Navbar {
+  menuToggle = output<void>();
+
   private router = inject(Router);
 
   private readonly auth = inject(Auth);
 
   public readonly loggedUser = this.auth.user;
+
+  readonly userInitials = computed(() => {
+    const name = this.loggedUser()?.name?.trim();
+    if (name) {
+      const parts = name.split(/\s+/);
+      return (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : '')).toUpperCase();
+    }
+    return this.loggedUser()?.email?.[0]?.toUpperCase() ?? '?';
+  });
 
   menuOpen = signal(false);
 
