@@ -1,0 +1,85 @@
+<aside
+    class="hidden h-full w-60 shrink-0 flex-col justify-between bg-ink text-white lg:flex">
+    <div>
+        <div class="flex items-center gap-2.5 px-5 py-6">
+            <span
+                class="flex h-8 w-8 items-center justify-center rounded-sm bg-amber text-ink">
+                <svg
+                    class="h-4.5 w-4.5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </span>
+            <div class="leading-tight">
+                <p
+                    class="font-display text-[15px] font-semibold tracking-tight text-white">
+                    Pulse
+                </p>
+                <p class="text-[11px] text-white/40">Incident Console</p>
+            </div>
+        </div>
+
+        <nav class="flex flex-col gap-0.5 px-3">
+            <p
+                class="px-3 pb-2 pt-4 text-[11px] font-medium uppercase tracking-wider text-white/30">
+                Workspace
+            </p>
+            @for (item of mainNav(); track item.path) {
+            <a
+                [routerLink]="item.path"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: item.path === '/' }"
+                class="nav-link">
+                <svg
+                    class="h-4 w-4 shrink-0"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75">
+                    <path
+                        [attr.d]="item.icon"
+                        stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                {{ item.label }}
+            </a>
+            }
+
+            <p
+                class="px-3 pb-2 pt-5 text-[11px] font-medium uppercase tracking-wider text-white/30">
+                General
+            </p>
+            @for (item of secondaryNav(); track item.path) {
+            <a
+                [routerLink]="item.path"
+                routerLinkActive="active"
+                class="nav-link">
+                <svg
+                    class="h-4 w-4 shrink-0"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75">
+                    <path
+                        [attr.d]="item.icon"
+                        stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                {{ item.label }}
+            </a>
+            }
+        </nav>
+    </div>
+
+    <div class="mx-3 mb-4 rounded-sm bg-white/5 p-3.5">
+        <p class="text-xs font-medium text-white/80">Storage used</p>
+        <div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+            <div class="h-full w-[68%] rounded-full bg-amber"></div>
+        </div>
+        <p class="mt-2 text-[11px] text-white/40">6.8 GB of 10 GB</p>
+    </div>
+</aside>

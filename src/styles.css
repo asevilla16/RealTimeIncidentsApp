@@ -1,3 +1,82 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import 'tailwindcss';
+
+@theme {
+  --color-paper: #f6f5f1;
+  --color-paper-soft: #efede6;
+
+  --color-ink: #14151a;
+  --color-ink-800: #1c1e25;
+  --color-ink-700: #252732;
+  --color-ink-600: #33364424;
+
+  --color-amber: #d9a441;
+  --color-amber-light: #f0ce8a;
+  --color-amber-dark: #a97a22;
+
+  --color-teal: #2f6f62;
+  --color-teal-light: #4c8f80;
+  --color-teal-dark: #1e4a40;
+
+  --color-coral: #e1604c;
+  --color-coral-light: #f0917f;
+
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+
+  --shadow-card: 0 1px 2px rgba(20, 21, 26, 0.04), 0 1px 12px rgba(20, 21, 26, 0.04);
+
+  --radius-sm: 6px;
+}
+
+@layer base {
+  * {
+    @apply border-ink/10;
+  }
+  body {
+    @apply antialiased;
+  }
+  ::selection {
+    @apply bg-amber/30;
+  }
+  /* visible keyboard focus, kept consistent across custom controls */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid #2f6f62;
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .stat-figure {
+    @apply font-mono tabular-nums tracking-tight;
+  }
+
+  .nav-link {
+    @apply flex items-center gap-3 rounded-sm px-3 py-2 text-sm text-white/60 transition-colors hover:bg-white/5 hover:text-white;
+  }
+  .nav-link.active {
+    @apply bg-white/10 text-white;
+  }
+
+  .card {
+    @apply rounded-sm border border-ink/10 bg-white shadow-card;
+  }
+
+  .pill {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

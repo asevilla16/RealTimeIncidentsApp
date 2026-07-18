@@ -1,0 +1,86 @@
+ <div
+    class="flex min-h-screen items-center justify-center bg-paper px-4 py-12 sm:px-6 lg:px-8">
+    <div
+        class="w-full max-w-md rounded-xl border border-ink/10 bg-white/95 p-8 shadow-card backdrop-blur-sm">
+        <div class="mb-8 text-center">
+            <div
+                class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-teal text-white">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </div>
+            <h1 class="text-2xl font-semibold text-ink">Welcome back</h1>
+            <p class="mt-2 text-sm text-ink/50">Sign in to continue to
+                Pulse.</p>
+        </div>
+
+        <form class="space-y-4" [formGroup]="form" (ngSubmit)="login()">
+            @if (error()) {
+                <div
+                    class="rounded-sm border border-coral/30 bg-coral/10 px-4 py-3 text-sm text-coral">
+                    {{ error() }}
+                </div>
+            }
+
+            <label class="block text-sm font-medium text-ink/70">Email</label>
+            <input
+                type="email"
+                formControlName="email"
+                autocomplete="email"
+                placeholder="you@example.com"
+                class="w-full rounded-sm border bg-white px-4 py-3 text-sm text-ink outline-none focus:ring-2 focus:ring-teal/20"
+                [ngClass]="form.controls.email.invalid && form.controls.email.touched
+                    ? 'border-coral'
+                    : 'border-ink/10 focus:border-teal'" />
+            @if (form.controls.email.invalid && form.controls.email.touched) {
+                <p class="mt-1 text-xs text-coral">
+                    {{ form.controls.email.hasError('required') ? 'Email is required.' : 'Enter a valid email address.' }}
+                </p>
+            }
+
+            <label
+                class="block text-sm font-medium text-ink/70">Password</label>
+            <input
+                type="password"
+                formControlName="password"
+                autocomplete="current-password"
+                placeholder="Enter your password"
+                class="w-full rounded-sm border bg-white px-4 py-3 text-sm text-ink outline-none focus:ring-2 focus:ring-teal/20"
+                [ngClass]="form.controls.password.invalid && form.controls.password.touched
+                    ? 'border-coral'
+                    : 'border-ink/10 focus:border-teal'" />
+            @if (form.controls.password.invalid && form.controls.password.touched) {
+                <p class="mt-1 text-xs text-coral">Password is required.</p>
+            }
+
+            <button
+                type="submit"
+                [disabled]="isPending()"
+                class="w-full rounded-sm bg-ink px-4 py-3 text-sm font-semibold text-white transition hover:bg-ink/90 disabled:cursor-not-allowed disabled:opacity-60">
+                {{ isPending() ? 'Signing in…' : 'Sign in' }}
+            </button>
+        </form>
+
+        <div class="my-6 flex items-center gap-3">
+            <div class="h-px flex-1 bg-ink/10"></div>
+            <span class="text-xs text-ink/40">or</span>
+            <div class="h-px flex-1 bg-ink/10"></div>
+        </div>
+
+        <button
+            type="button"
+            (click)="loginWithGoogle()"
+            [disabled]="isPending()"
+            class="flex w-full items-center justify-center gap-3 rounded-sm border border-ink/10 bg-white px-4 py-3 text-sm font-semibold text-ink transition hover:bg-ink/5 disabled:cursor-not-allowed disabled:opacity-60">
+            <svg class="h-4 w-4" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M23.52 12.27c0-.85-.08-1.67-.22-2.45H12v4.64h6.47c-.28 1.5-1.13 2.77-2.4 3.62v3h3.88c2.27-2.09 3.57-5.17 3.57-8.81z" />
+                <path fill="#34A853" d="M12 24c3.24 0 5.96-1.07 7.95-2.92l-3.88-3c-1.08.72-2.45 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96H1.26v3.11C3.24 21.3 7.28 24 12 24z" />
+                <path fill="#FBBC05" d="M5.27 14.27a7.2 7.2 0 0 1-.38-2.27c0-.79.14-1.55.38-2.27V6.62H1.26A11.98 11.98 0 0 0 0 12c0 1.94.46 3.77 1.26 5.38l4.01-3.11z" />
+                <path fill="#EA4335" d="M12 4.77c1.77 0 3.35.61 4.6 1.8l3.45-3.45C17.95 1.19 15.24 0 12 0 7.28 0 3.24 2.7 1.26 6.62l4.01 3.11C6.22 6.88 8.87 4.77 12 4.77z" />
+            </svg>
+            {{ isPending() ? 'Signing in…' : 'Sign in with Google' }}
+        </button>
+    </div>
+</div>

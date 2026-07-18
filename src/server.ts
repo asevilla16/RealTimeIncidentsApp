@@ -1,3 +1,4 @@
+import 'dotenv/config'; // must be first: populates process.env before anything below reads it
 import {
   AngularNodeAppEngine,
   createNodeRequestHandler,
@@ -24,6 +25,8 @@ const angularApp = new AngularNodeAppEngine();
  * ```
  */
 
+app.use(express.json());
+
 /**
  * Serve static files from /browser
  */
@@ -35,15 +38,27 @@ app.use(
   }),
 );
 
+// The client SDK signs the user in and gets an ID token; this endpoint
+// exchanges it for a server-controlled httpOnly session cookie. Kept as a
+// plain Express route (not an Angular concern) since it's a one-shot REST
+// call, not a rendered page.
+app.post('/api/auth/session', async (req, res) => {
+  const { verifySessionExchange } = await import('./app/auth/session-exchange.server');
+  await verifySessionExchange(req, res);
+});
+
+app.delete('/api/auth/session', (req, res) => {
+  res.clearCookie('session');
+  res.json({ status: 'ok' });
+});
+
 /**
  * Handle all other requests by rendering the Angular application.
  */
 app.use((req, res, next) => {
   angularApp
     .handle(req)
-    .then((response) =>
-      response ? writeResponseToNodeResponse(response, res) : next(),
-    )
+    .then((response) => (response ? writeResponseToNodeResponse(response, res) : next()))
     .catch(next);
 });
 
