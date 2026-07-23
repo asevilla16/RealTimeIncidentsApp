@@ -28,9 +28,7 @@ import {
   IncidentStatus,
   IncidentUpdate,
 } from '../models/incident.model';
-import { SEVERITY_ORDER } from '../mock/mock-incidents';
 
-// Same severity -> hue mapping as SeverityPillComponent, solid instead of tinted.
 const SEVERITY_CHART_COLORS: Record<IncidentSeverity, string> = {
   critical: 'bg-coral',
   high: 'bg-amber-dark',
@@ -42,6 +40,8 @@ const SEVERITY_CHART_COLORS: Record<IncidentSeverity, string> = {
 export class Incidents {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly destroyRef = inject(DestroyRef);
+
+  private severityOrder: IncidentSeverity[] = ['critical', 'high', 'medium', 'low'];
 
   // Empty until the first Firestore snapshot arrives; isLoading distinguishes
   // "still loading" from "genuinely no incidents" for consumers.
@@ -81,7 +81,7 @@ export class Incidents {
   });
 
   readonly severityBreakdown = computed<BarDatum[]>(() =>
-    SEVERITY_ORDER.map((severity) => ({
+    this.severityOrder.map((severity) => ({
       label: severity[0].toUpperCase() + severity.slice(1),
       value: this.incidents().filter((i) => i.severity === severity).length,
       colorClass: SEVERITY_CHART_COLORS[severity],

@@ -23,15 +23,6 @@ export const routes: Routes = [
           import('./pages/incident-detail/incident-detail').then((m) => m.IncidentDetail),
         title: 'Incident — Pulse',
       },
-      //   {
-      //     path: "settings",
-      //     loadComponent: () =>
-      //       import("./pages/placeholder/placeholder.component").then(
-      //         (m) => m.PlaceholderComponent,
-      //       ),
-      //     title: "Settings — Pulse",
-      //     data: { name: "Settings" },
-      //   },
     ],
   },
   {
