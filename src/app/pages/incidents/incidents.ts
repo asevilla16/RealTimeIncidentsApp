@@ -2,10 +2,11 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Incidents as IncidentsService } from '../../core/services/incidents';
-import { IncidentSeverity, IncidentStatus } from '../../core/models/incident.model';
+import { Incident, IncidentSeverity, IncidentStatus } from '../../core/models/incident.model';
 import { SeverityPillComponent } from '../../shared/components/severity-pill/severity-pill.component';
 import { IncidentStatusPillComponent } from '../../shared/components/incident-status-pill/incident-status-pill.component';
 import { PaginationComponent } from '../../shared/components/pagination/pagination.component';
+import { CreateIncidentDialog } from '../../shared/components/create-incident-dialog/create-incident-dialog';
 
 const SEVERITIES: IncidentSeverity[] = ['critical', 'high', 'medium', 'low'];
 const STATUSES: IncidentStatus[] = ['investigating', 'identified', 'monitoring', 'resolved'];
@@ -18,6 +19,7 @@ const STATUSES: IncidentStatus[] = ['investigating', 'identified', 'monitoring',
     SeverityPillComponent,
     IncidentStatusPillComponent,
     PaginationComponent,
+    CreateIncidentDialog,
   ],
   templateUrl: './incidents.html',
   styleUrl: './incidents.css',
@@ -35,6 +37,9 @@ export class Incidents {
   readonly pageSizeOptions = [5, 10, 25, 50];
   pageSize = signal(5);
   private readonly rawPage = signal(1);
+
+  isDialogOpen = signal(false);
+  editingIncident = signal<Incident | null>(null);
 
   filteredIncidents = computed(() => {
     const severity = this.severityFilter();
@@ -90,5 +95,19 @@ export class Incidents {
 
   goToPage(page: number): void {
     this.rawPage.set(Math.min(Math.max(1, page), this.totalPages()));
+  }
+
+  openCreateDialog(): void {
+    this.editingIncident.set(null);
+    this.isDialogOpen.set(true);
+  }
+
+  openEditDialog(incident: Incident): void {
+    this.editingIncident.set(incident);
+    this.isDialogOpen.set(true);
+  }
+
+  closeDialog(): void {
+    this.isDialogOpen.set(false);
   }
 }
