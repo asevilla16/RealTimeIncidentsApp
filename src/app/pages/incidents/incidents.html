@@ -59,6 +59,13 @@
                     <option [value]="status">{{ status }}</option>
                     }
                 </select>
+
+                <button
+                    type="button"
+                    class="rounded-sm bg-teal px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-dark"
+                    (click)="openCreateDialog()">
+                    + New incident
+                </button>
             </div>
         </div>
     </div>
@@ -88,8 +95,9 @@
                         <th class="px-5 py-3 font-medium">Status</th>
                         <th class="px-5 py-3 font-medium">Owner</th>
                         <th class="px-5 py-3 font-medium">Created</th>
+                        <th class="px-5 py-3 font-medium">Updated</th>
                         <th
-                            class="px-5 py-3 text-right font-medium">Updated</th>
+                            class="px-5 py-3 text-right font-medium">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -112,14 +120,42 @@
                             }}</td>
                         <td class="px-5 py-3 text-ink/50">{{ incident.createdAt
                             | date: 'MMM d' }}</td>
-                        <td
-                            class="stat-figure px-5 py-3 text-right text-ink/50">{{
+                        <td class="stat-figure px-5 py-3 text-ink/50">{{
                             incident.updatedAt | date: 'MMM d, h:mm a' }}</td>
+                        <td class="px-5 py-3">
+                            <div class="flex items-center justify-end gap-1">
+                                <a [routerLink]="[incident.id]"
+                                    aria-label="View incident"
+                                    title="View"
+                                    class="flex h-8 w-8 items-center justify-center rounded-sm text-ink/45 transition-colors hover:bg-paper-soft hover:text-ink">
+                                    <svg class="h-4 w-4" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor"
+                                        stroke-width="1.75">
+                                        <path
+                                            d="M2.5 12S6 5 12 5s9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7Z" />
+                                        <circle cx="12" cy="12" r="2.5" />
+                                    </svg>
+                                </a>
+                                <button
+                                    type="button"
+                                    aria-label="Edit incident"
+                                    title="Edit"
+                                    class="flex h-8 w-8 items-center justify-center rounded-sm text-ink/45 transition-colors hover:bg-paper-soft hover:text-ink"
+                                    (click)="openEditDialog(incident)">
+                                    <svg class="h-4 w-4" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor"
+                                        stroke-width="1.75">
+                                        <path
+                                            d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
                     </tr>
                     } @empty {
                     <tr>
                         <td class="px-5 py-6 text-center text-sm text-ink/45"
-                            colspan="7">
+                            colspan="8">
                             @if (incidentsService.isLoading()) {
                             Loading incidents…
                             } @else {
@@ -141,3 +177,8 @@
             (pageChange)="goToPage($event)" />
     </div>
 </div>
+
+<app-create-incident-dialog
+    [open]="isDialogOpen()"
+    [incident]="editingIncident()"
+    (closed)="closeDialog()" />

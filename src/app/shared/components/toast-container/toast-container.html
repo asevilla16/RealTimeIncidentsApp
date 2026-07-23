@@ -1,0 +1,35 @@
+<div
+    class="pointer-events-none fixed inset-x-0 bottom-4 z-60 flex flex-col items-center gap-2 px-4 sm:inset-x-auto sm:right-4 sm:items-end">
+    @for (toast of toasts(); track toast.id) {
+    <div
+        class="pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-sm p-3 text-sm text-white shadow-lg"
+        [class.bg-teal]="toast.variant === 'success'"
+        [class.bg-coral]="toast.variant === 'error'"
+        role="status">
+        @if (toast.variant === 'success') {
+        <svg class="mt-0.5 h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <path d="m5 13 4 4L19 7" stroke-linecap="round"
+                stroke-linejoin="round" />
+        </svg>
+        } @else {
+        <svg class="mt-0.5 h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 8v5M12 16h.01" stroke-linecap="round" />
+        </svg>
+        }
+
+        <p class="flex-1 leading-snug">{{ toast.message }}</p>
+
+        <button type="button" aria-label="Dismiss"
+            class="text-white/70 transition-colors hover:text-white"
+            (click)="dismiss(toast.id)">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="m6 6 12 12M18 6 6 18" stroke-linecap="round" />
+            </svg>
+        </button>
+    </div>
+    }
+</div>

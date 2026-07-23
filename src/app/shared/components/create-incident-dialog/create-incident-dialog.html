@@ -1,0 +1,100 @@
+@if (open()) {
+<div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 p-4"
+    (click)="onBackdropClick($event)">
+    <div class="card w-full max-w-lg p-6" role="dialog" aria-modal="true"
+        aria-labelledby="create-incident-title">
+        <div class="flex items-center justify-between">
+            <h2 id="create-incident-title"
+                class="font-display text-base font-semibold text-ink">{{
+                isEditMode() ? 'Edit incident' : 'New incident' }}</h2>
+            <button type="button" aria-label="Close"
+                class="text-ink/40 hover:text-ink" (click)="close()">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.75">
+                    <path d="m6 6 12 12M18 6 6 18" stroke-linecap="round" />
+                </svg>
+            </button>
+        </div>
+
+        <form class="mt-4 flex flex-col gap-4" [formGroup]="form"
+            (ngSubmit)="submit()">
+            <label class="flex flex-col gap-1 text-sm">
+                <span
+                    class="text-xs font-medium uppercase tracking-wide text-ink/45">Title</span>
+                <input
+                    type="text"
+                    formControlName="title"
+                    placeholder="Short summary…"
+                    class="rounded-sm border border-ink/10 bg-white px-3 py-2 text-sm text-ink placeholder:text-ink/35 focus:outline-none focus-visible:outline-2 focus-visible:outline-teal" />
+                @if (form.controls.title.invalid && form.controls.title.touched) {
+                <span class="text-xs text-coral">Title is required.</span>
+                }
+            </label>
+
+            <label class="flex flex-col gap-1 text-sm">
+                <span
+                    class="text-xs font-medium uppercase tracking-wide text-ink/45">Description</span>
+                <textarea
+                    rows="3"
+                    formControlName="description"
+                    placeholder="What's happening…"
+                    class="resize-none rounded-sm border border-ink/10 bg-white px-3 py-2 text-sm text-ink placeholder:text-ink/35 focus:outline-none focus-visible:outline-2 focus-visible:outline-teal"></textarea>
+                @if (form.controls.description.invalid &&
+                form.controls.description.touched) {
+                <span class="text-xs text-coral">Description is
+                    required.</span>
+                }
+            </label>
+
+            <div class="grid grid-cols-2 gap-4">
+                <label class="flex flex-col gap-1 text-sm">
+                    <span
+                        class="text-xs font-medium uppercase tracking-wide text-ink/45">Severity</span>
+                    <select
+                        formControlName="severity"
+                        class="rounded-sm border border-ink/10 bg-white px-3 py-2 text-sm text-ink capitalize focus:outline-none focus-visible:outline-2 focus-visible:outline-teal">
+                        @for (severity of severities; track severity) {
+                        <option [value]="severity" class="capitalize">{{
+                            severity }}</option>
+                        }
+                    </select>
+                </label>
+
+                <label class="flex flex-col gap-1 text-sm">
+                    <span
+                        class="text-xs font-medium uppercase tracking-wide text-ink/45">Status</span>
+                    <select
+                        formControlName="status"
+                        class="rounded-sm border border-ink/10 bg-white px-3 py-2 text-sm text-ink capitalize focus:outline-none focus-visible:outline-2 focus-visible:outline-teal">
+                        @for (status of statuses; track status) {
+                        <option [value]="status">{{ status }}</option>
+                        }
+                    </select>
+                </label>
+            </div>
+
+            @if (error()) {
+            <p class="text-xs text-coral">{{ error() }}</p>
+            }
+
+            <div class="mt-2 flex justify-end gap-2">
+                <button
+                    type="button"
+                    class="rounded-sm border border-ink/10 px-4 py-2 text-sm font-medium text-ink transition-colors hover:bg-paper-soft"
+                    (click)="close()">
+                    Cancel
+                </button>
+                <button
+                    type="submit"
+                    [disabled]="form.invalid || isSubmitting()"
+                    class="rounded-sm bg-teal px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-dark disabled:cursor-not-allowed disabled:opacity-40">
+                    {{ isSubmitting()
+                    ? (isEditMode() ? 'Saving…' : 'Creating…')
+                    : (isEditMode() ? 'Save changes' : 'Create incident') }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+}

@@ -22,7 +22,12 @@ import {
 } from 'firebase/firestore';
 import { getClientDb } from '../firebase/firebase-client';
 import { BarDatum } from '../../shared/components/bar-chart/bar-chart.component';
-import { Incident, IncidentSeverity, IncidentUpdate } from '../models/incident.model';
+import {
+  Incident,
+  IncidentSeverity,
+  IncidentStatus,
+  IncidentUpdate,
+} from '../models/incident.model';
 import { SEVERITY_ORDER } from '../mock/mock-incidents';
 
 // Same severity -> hue mapping as SeverityPillComponent, solid instead of tinted.
@@ -193,6 +198,45 @@ export class Incidents {
 
   byId(id: string) {
     return computed(() => this._incidents().find((incident) => incident.id === id));
+  }
+
+  async createIncident(input: {
+    title: string;
+    description: string;
+    severity: IncidentSeverity;
+    status: IncidentStatus;
+    ownerName: string;
+    ownerId: string;
+  }): Promise<void> {
+    await addDoc(collection(getClientDb(), 'incidents'), {
+      title: input.title,
+      description: input.description,
+      severity: input.severity,
+      status: input.status,
+      ownerName: input.ownerName,
+      ownerId: input.ownerId,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+      resolvedAt: null,
+    });
+  }
+
+  async updateIncident(
+    incidentId: string,
+    input: {
+      title: string;
+      description: string;
+      severity: IncidentSeverity;
+      status: IncidentStatus;
+    },
+  ): Promise<void> {
+    await updateDoc(doc(getClientDb(), 'incidents', incidentId), {
+      title: input.title,
+      description: input.description,
+      severity: input.severity,
+      status: input.status,
+      updatedAt: serverTimestamp(),
+    });
   }
 
   // Live-subscribes to an incident's `updates` subcollection. Kept separate
