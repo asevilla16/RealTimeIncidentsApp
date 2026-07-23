@@ -1,0 +1,143 @@
+<div class="flex flex-col gap-6">
+    <div class="card p-5">
+        <div
+            class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <h2 class="font-display text-base font-semibold text-ink">All
+                    incidents</h2>
+                @if (incidentsService.isLoading()) {
+                <p class="flex items-center gap-1.5 text-xs text-ink/45">
+                    <svg class="h-3.5 w-3.5 animate-spin text-ink/35"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M12 3a9 9 0 1 0 9 9" stroke-linecap="round" />
+                    </svg>
+                    Syncing live data…
+                </p>
+                } @else {
+                <p class="text-xs text-ink/45">{{ filteredIncidents().length }}
+                    of {{ incidentsService.incidents().length }} incidents</p>
+                }
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2">
+                <label class="relative">
+                    <svg
+                        class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/35"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.75">
+                        <circle cx="11" cy="11" r="7" />
+                        <path d="m20 20-3-3" stroke-linecap="round" />
+                    </svg>
+                    <input
+                        type="text"
+                        placeholder="Search incidents…"
+                        class="w-56 rounded-sm border border-ink/10 bg-white py-2 pl-9 pr-3 text-sm text-ink placeholder:text-ink/35 focus:outline-none focus-visible:outline-2 focus-visible:outline-teal"
+                        [value]="searchQuery()"
+                        (input)="setSearchQuery($any($event.target).value)" />
+                </label>
+
+                <select
+                    class="rounded-sm border border-ink/10 bg-white px-3 py-2 text-sm text-ink focus:outline-none focus-visible:outline-2 focus-visible:outline-teal"
+                    [value]="severityFilter()"
+                    (change)="setSeverityFilter($any($event.target).value)">
+                    <option value="all">All severities</option>
+                    @for (severity of severities; track severity) {
+                    <option [value]="severity" class="capitalize">{{
+                        severity }}</option>
+                    }
+                </select>
+
+                <select
+                    class="rounded-sm border border-ink/10 bg-white px-3 py-2 text-sm text-ink capitalize focus:outline-none focus-visible:outline-2 focus-visible:outline-teal"
+                    [value]="statusFilter()"
+                    (change)="setStatusFilter($any($event.target).value)">
+                    <option value="all">All statuses</option>
+                    @for (status of statuses; track status) {
+                    <option [value]="status">{{ status }}</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="card p-5">
+        <div class="mb-4 flex justify-end">
+            <label class="flex items-center gap-2 text-xs text-ink/45">
+                Rows per page
+                <select
+                    class="rounded-sm border border-ink/10 bg-white px-2 py-1 text-sm text-ink focus:outline-none focus-visible:outline-2 focus-visible:outline-teal"
+                    [value]="pageSize()"
+                    (change)="setPageSize(+$any($event.target).value)">
+                    @for (size of pageSizeOptions; track size) {
+                    <option [value]="size">{{ size }}</option>
+                    }
+                </select>
+            </label>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+                <thead>
+                    <tr class="text-xs uppercase tracking-wide text-ink/40">
+                        <th class="px-5 py-3 font-medium">N°</th>
+                        <th class="px-5 py-3 font-medium">Incident</th>
+                        <th class="px-5 py-3 font-medium">Severity</th>
+                        <th class="px-5 py-3 font-medium">Status</th>
+                        <th class="px-5 py-3 font-medium">Owner</th>
+                        <th class="px-5 py-3 font-medium">Created</th>
+                        <th
+                            class="px-5 py-3 text-right font-medium">Updated</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (incident of paginatedIncidents(); track incident.id) {
+                    <tr class="border-t border-ink/5 hover:bg-paper-soft/60">
+                        <td class="px-5 py-3">{{$index + 1}}</td>
+                        <td class="px-5 py-3">
+                            <a [routerLink]="[incident.id]"
+                                class="font-medium text-ink hover:underline">{{
+                                incident.title }}</a>
+                            <p
+                                class="mt-0.5 line-clamp-1 text-xs text-ink/45">
+                                {{ incident.description }}</p>
+                        </td>
+                        <td class="px-5 py-3"><app-severity-pill
+                                [severity]="incident.severity" /></td>
+                        <td class="px-5 py-3"><app-incident-status-pill
+                                [status]="incident.status" /></td>
+                        <td class="px-5 py-3 text-ink/70">{{ incident.ownerName
+                            }}</td>
+                        <td class="px-5 py-3 text-ink/50">{{ incident.createdAt
+                            | date: 'MMM d' }}</td>
+                        <td
+                            class="stat-figure px-5 py-3 text-right text-ink/50">{{
+                            incident.updatedAt | date: 'MMM d, h:mm a' }}</td>
+                    </tr>
+                    } @empty {
+                    <tr>
+                        <td class="px-5 py-6 text-center text-sm text-ink/45"
+                            colspan="7">
+                            @if (incidentsService.isLoading()) {
+                            Loading incidents…
+                            } @else {
+                            No incidents match these filters.
+                            }
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <app-pagination
+            class="mt-4 block border-t border-ink/5 pt-4"
+            [currentPage]="currentPage()"
+            [totalPages]="totalPages()"
+            [pageSize]="pageSize()"
+            [totalItems]="filteredIncidents().length"
+            (pageChange)="goToPage($event)" />
+    </div>
+</div>

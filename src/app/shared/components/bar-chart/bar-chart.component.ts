@@ -3,21 +3,22 @@ import { Component, computed, input } from "@angular/core";
 export interface BarDatum {
   label: string;
   value: number;
+  colorClass?: string; // e.g. "bg-coral" - overrides the highlight/default coloring
 }
 
 @Component({
   selector: "app-bar-chart",
   standalone: true,
   template: `
-    <div class="flex flex-col">
-      <div class="flex items-end gap-2.5 overflow-hidden">
+    <div class="flex h-full min-h-40 flex-col">
+      <div class="flex h-full gap-2.5 overflow-hidden">
         @for (bar of data(); track bar.label) {
-          <div class="flex flex-1 flex-col items-center gap-2">
-            <div class="flex h-40 w-full items-end overflow-hidden">
+          <div class="flex h-full flex-1 flex-col items-center gap-2">
+            <div class="flex w-full flex-1 flex-col items-center justify-end overflow-hidden">
+              <span class="stat-figure mb-1.5 text-xs font-medium text-ink/70">{{ bar.value }}</span>
               <div
                 class="w-full rounded-t-[3px] transition-[height] duration-300"
-                [class.bg-amber]="bar.label === highlight()"
-                [class.bg-teal]="bar.label !== highlight()"
+                [class]="bar.colorClass ?? (bar.label === highlight() ? 'bg-amber' : 'bg-teal')"
                 [style.height.%]="heightPct(bar.value)"
               ></div>
             </div>
