@@ -101,6 +101,16 @@
         }
     </div>
 </div>
+} @else if (isLoadingIncident()) {
+<div class="card p-6">
+    <p class="flex items-center gap-1.5 text-xs text-ink/45">
+        <svg class="h-3.5 w-3.5 animate-spin text-ink/35" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 3a9 9 0 1 0 9 9" stroke-linecap="round" />
+        </svg>
+        Loading incident…
+    </p>
+</div>
 } @else {
 <div class="card p-6 text-sm text-ink/60">
     Incident not found.

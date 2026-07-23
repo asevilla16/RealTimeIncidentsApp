@@ -76,8 +76,6 @@ export class Auth {
       const credential = await signInWithEmailAndPassword(getClientAuth(), email, password);
       const idToken = await credential.user.getIdToken();
 
-      console.log({ credential, idToken });
-
       const response = await fetch('/api/auth/session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -104,7 +102,6 @@ export class Auth {
     try {
       const credential = await signInWithPopup(getClientAuth(), new GoogleAuthProvider());
       const idToken = await credential.user.getIdToken();
-      console.log({ credential });
 
       const response = await fetch('/api/auth/session', {
         method: 'POST',

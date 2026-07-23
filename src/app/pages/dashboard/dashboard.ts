@@ -22,13 +22,15 @@ export class Dashboard {
   private readonly incidentsService = inject(Incidents);
 
   isLoading = this.incidentsService.isLoading;
+  isLoadingRecentUpdates = this.incidentsService.isLoadingRecentUpdates;
+
   activeIncidents = this.incidentsService.activeIncidents;
   criticalCount = this.incidentsService.criticalCount;
   investigatingCount = this.incidentsService.investigatingCount;
   resolvedThisWeek = this.incidentsService.resolvedThisWeek;
   severityBreakdown = this.incidentsService.severityBreakdown;
   recentUpdates = this.incidentsService.recentUpdates;
-  visibleUpdates = computed(() => this.recentUpdates().slice(0, 3));
 
+  visibleUpdates = computed(() => this.recentUpdates().slice(0, 3));
   totalIncidents = computed(() => this.incidentsService.incidents().length);
 }

@@ -54,6 +54,9 @@ export class Incidents {
   // joined with their parent incident (see recentUpdates below).
   private readonly _recentUpdateDocs = signal<IncidentUpdate[]>([]);
 
+  private readonly _isLoadingRecentUpdates = signal(true);
+  readonly isLoadingRecentUpdates = this._isLoadingRecentUpdates.asReadonly();
+
   readonly incidents = computed(() =>
     [...this._incidents()].sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()),
   );
@@ -189,8 +192,12 @@ export class Incidents {
             .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
             .slice(0, 6),
         );
+        this._isLoadingRecentUpdates.set(false);
       },
-      (error) => console.error('Failed to load recent updates from Firestore:', error),
+      (error) => {
+        console.error('Failed to load recent updates from Firestore:', error);
+        this._isLoadingRecentUpdates.set(false);
+      },
     );
 
     this.destroyRef.onDestroy(unsubscribe);
