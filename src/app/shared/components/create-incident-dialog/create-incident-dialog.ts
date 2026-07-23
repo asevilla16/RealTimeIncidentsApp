@@ -1,4 +1,13 @@
-import { Component, computed, effect, HostListener, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  HostListener,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Incidents } from '../../../core/services/incidents';
 import { Auth } from '../../../auth/services/auth';
@@ -20,8 +29,6 @@ export class CreateIncidentDialog {
   private readonly toast = inject(Toast);
 
   open = input(false);
-  // Non-null puts the dialog in "edit" mode: form is prefilled from this
-  // incident and submit calls updateIncident() instead of createIncident().
   incident = input<Incident | null>(null);
   closed = output<void>();
 
@@ -41,10 +48,6 @@ export class CreateIncidentDialog {
   });
 
   constructor() {
-    // Reset every time the dialog opens, rather than on close, so the
-    // fields don't visibly clear while the close animation (if any is ever
-    // added) is still playing. Prefills from `incident` in edit mode,
-    // otherwise a blank form.
     effect(() => {
       if (!this.open()) return;
 

@@ -44,10 +44,6 @@ export class IncidentDetail {
   isPostingUpdate = signal(false);
 
   constructor() {
-    // afterNextRender + isPlatformBrowser: watchIncidentUpdates() touches
-    // browser-only Firestore APIs and must never run during SSR - see
-    // firebase-client.ts. The effect re-subscribes whenever `id` changes,
-    // since the router reuses this component instance across incidents.
     if (isPlatformBrowser(this.platformId)) {
       afterNextRender(() => {
         effect(
@@ -56,10 +52,13 @@ export class IncidentDetail {
             this._updates.set([]);
             this.isLoadingUpdates.set(true);
 
-            const unsubscribe = this.incidentsService.watchIncidentUpdates(incidentId, (updates) => {
-              this._updates.set(updates);
-              this.isLoadingUpdates.set(false);
-            });
+            const unsubscribe = this.incidentsService.watchIncidentUpdates(
+              incidentId,
+              (updates) => {
+                this._updates.set(updates);
+                this.isLoadingUpdates.set(false);
+              },
+            );
 
             onCleanup(unsubscribe);
           },
