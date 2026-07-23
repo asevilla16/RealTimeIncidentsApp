@@ -19,24 +19,14 @@ export class Sidebar {
 
   mainNav = signal<NavItem[]>([
     {
-      label: 'Dashboard',
+      label: 'Overview',
       path: '/',
       icon: 'M3 10.5 12 3l9 7.5M5 9.5V21h14V9.5',
     },
     {
-      label: 'Orders',
-      path: '/orders',
-      icon: 'M4 7h16M6 7l1.5 12h9L18 7M9 11v4m6-4v4',
-    },
-    {
-      label: 'Customers',
-      path: '/customers',
-      icon: 'M16 14a4 4 0 1 0-8 0m9 7v-1a5 5 0 0 0-5-5H12a5 5 0 0 0-5 5v1',
-    },
-    {
-      label: 'Products',
-      path: '/products',
-      icon: 'M21 8 12 3 3 8l9 5 9-5ZM3 8v8l9 5m0-13v13m9-13v8l-9 5',
+      label: 'Incidents',
+      path: '/incidents',
+      icon: 'M12 9v4m0 4h.01M10.3 3.9 2.5 17a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z',
     },
   ]);
 

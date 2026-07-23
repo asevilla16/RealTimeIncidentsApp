@@ -1,59 +1,116 @@
 <div class="flex flex-col gap-6">
-    <!-- Stat cards -->
+    <!-- Stat tiles -->
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        @for (stat of stats(); track stat.label) {
-        <app-stat-card [stat]="stat" />
-        }
+        <div class="card p-5">
+            <p
+                class="text-xs font-medium uppercase tracking-wide text-ink/45">
+                Active incidents</p>
+            <p class="stat-figure mt-3 text-2xl font-medium text-ink">{{
+                activeIncidents().length }}</p>
+        </div>
+        <div class="card p-5">
+            <p
+                class="text-xs font-medium uppercase tracking-wide text-ink/45">
+                Critical</p>
+            <p class="stat-figure mt-3 text-2xl font-medium text-coral">{{
+                criticalCount() }}</p>
+        </div>
+        <div class="card p-5">
+            <p
+                class="text-xs font-medium uppercase tracking-wide text-ink/45">
+                Investigating</p>
+            <p class="stat-figure mt-3 text-2xl font-medium text-ink">{{
+                investigatingCount() }}</p>
+        </div>
+        <div class="card p-5">
+            <p
+                class="text-xs font-medium uppercase tracking-wide text-ink/45">
+                Resolved (7d)</p>
+            <p class="stat-figure mt-3 text-2xl font-medium text-teal">{{
+                resolvedThisWeek() }}</p>
+        </div>
     </div>
 
-    <!-- Revenue chart + activity feed -->
+    <!-- Severity breakdown + recent updates -->
     <div class="grid grid-cols-1 gap-4 xl:grid-cols-3">
-        <div class="card p-5 xl:col-span-2">
+        <div class="card flex flex-col p-5 xl:col-span-2">
             <div class="mb-4 flex items-center justify-between">
                 <div>
                     <h2
-                        class="font-display text-base font-semibold text-ink">Revenue
-                        this week</h2>
-                    <p class="text-xs text-ink/45">Friday is your strongest day
-                        on average</p>
+                        class="font-display text-base font-semibold text-ink">Incidents
+                        by severity</h2>
+                    @if (isLoading()) {
+                    <p class="flex items-center gap-1.5 text-xs text-ink/45">
+                        <svg class="h-3.5 w-3.5 animate-spin text-ink/35"
+                            viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M12 3a9 9 0 1 0 9 9"
+                                stroke-linecap="round" />
+                        </svg>
+                        Syncing live data…
+                    </p>
+                    } @else {
+                    <p class="text-xs text-ink/45">{{ totalIncidents() }} total
+                        incidents tracked</p>
+                    }
                 </div>
                 <div class="flex items-center gap-3 text-xs text-ink/50">
                     <span class="flex items-center gap-1.5"><span
-                            class="h-2 w-2 rounded-full bg-teal"></span>Standard</span>
+                            class="h-2 w-2 rounded-full bg-coral"></span>Critical</span>
                     <span class="flex items-center gap-1.5"><span
-                            class="h-2 w-2 rounded-full bg-amber"></span>Peak
-                        day</span>
+                            class="h-2 w-2 rounded-full bg-amber-dark"></span>High</span>
+                    <span class="flex items-center gap-1.5"><span
+                            class="h-2 w-2 rounded-full bg-amber"></span>Medium</span>
+                    <span class="flex items-center gap-1.5"><span
+                            class="h-2 w-2 rounded-full bg-teal"></span>Low</span>
                 </div>
             </div>
-            <app-bar-chart [data]="revenueByDay()" highlight="Fri" />
+            <app-bar-chart class="min-h-0 flex-1" [data]="severityBreakdown()" />
         </div>
 
-        <div class="card flex flex-col p-5">
+        <div class="card p-5">
             <h2
-                class="mb-4 font-display text-base font-semibold text-ink">Activity</h2>
-            <ol class="flex flex-1 flex-col gap-4">
-                @for (item of activity(); track item.id) {
+                class="mb-4 font-display text-base font-semibold text-ink">Recent
+                updates</h2>
+            <ol class="flex flex-col gap-4">
+                @for (update of visibleUpdates(); track update.id) {
                 <li class="flex gap-3 text-sm">
                     <span
                         class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber"></span>
                     <div class="leading-snug">
-                        <p class="text-ink"><span class="font-medium">{{
-                                item.actor }}</span> {{ item.action }}</p>
-                        <p class="text-xs text-ink/40">{{ item.time }}</p>
+                        <p class="text-ink">
+                            <span class="font-medium">{{
+                                update.authorName }}</span>
+                            on
+                            <a [routerLink]="['/incidents', update.incident.id]"
+                                class="font-medium text-teal hover:underline">{{
+                                update.incident.title }}</a>
+                        </p>
+                        <p class="text-ink/60">{{ update.message }}</p>
+                        <p class="text-xs text-ink/40">{{ update.createdAt |
+                            date: 'MMM d, h:mm a' }}</p>
                     </div>
                 </li>
+                } @empty {
+                <li class="text-sm text-ink/45">No updates yet.</li>
                 }
             </ol>
+
+            @if (recentUpdates().length > visibleUpdates().length) {
+            <a routerLink="/incidents"
+                class="mt-4 block text-center text-xs font-medium text-teal hover:underline">See
+                more</a>
+            }
         </div>
     </div>
 
-    <!-- Recent orders -->
+    <!-- Active incidents -->
     <div class="card">
         <div
             class="flex items-center justify-between border-b border-ink/10 p-5">
-            <h2 class="font-display text-base font-semibold text-ink">Recent
-                orders</h2>
-            <a routerLink="/orders"
+            <h2 class="font-display text-base font-semibold text-ink">Active
+                incidents</h2>
+            <a routerLink="/incidents"
                 class="text-xs font-medium text-teal hover:underline">View
                 all</a>
         </div>
@@ -61,26 +118,40 @@
             <table class="w-full text-left text-sm">
                 <thead>
                     <tr class="text-xs uppercase tracking-wide text-ink/40">
-                        <th class="px-5 py-3 font-medium">Order</th>
-                        <th class="px-5 py-3 font-medium">Customer</th>
-                        <th class="px-5 py-3 font-medium">Date</th>
+                        <th class="px-5 py-3 font-medium">Incident</th>
+                        <th class="px-5 py-3 font-medium">Severity</th>
                         <th class="px-5 py-3 font-medium">Status</th>
-                        <th class="px-5 py-3 text-right font-medium">Amount</th>
+                        <th class="px-5 py-3 font-medium">Owner</th>
+                        <th class="px-5 py-3 text-right font-medium">Updated</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @for (order of recentOrders(); track order.id) {
+                    @for (incident of activeIncidents(); track incident.id) {
                     <tr class="border-t border-ink/5 hover:bg-paper-soft/60">
-                        <td class="stat-figure px-5 py-3 text-ink/70">{{
-                            order.id }}</td>
-                        <td class="px-5 py-3 font-medium text-ink">{{
-                            order.customer }}</td>
-                        <td class="px-5 py-3 text-ink/50">{{ order.date | date:
-                            'MMM d' }}</td>
-                        <td class="px-5 py-3"><app-status-pill
-                                [status]="order.status" /></td>
-                        <td class="stat-figure px-5 py-3 text-right text-ink">{{
-                            order.amount | currency }}</td>
+                        <td class="px-5 py-3 font-medium text-ink">
+                            <a [routerLink]="['/incidents', incident.id]"
+                                class="hover:underline">{{ incident.title
+                                }}</a>
+                        </td>
+                        <td class="px-5 py-3"><app-severity-pill
+                                [severity]="incident.severity" /></td>
+                        <td class="px-5 py-3"><app-incident-status-pill
+                                [status]="incident.status" /></td>
+                        <td class="px-5 py-3 text-ink/70">{{ incident.ownerName
+                            }}</td>
+                        <td class="stat-figure px-5 py-3 text-right text-ink/50">{{
+                            incident.updatedAt | date: 'MMM d, h:mm a' }}</td>
+                    </tr>
+                    } @empty {
+                    <tr>
+                        <td class="px-5 py-6 text-center text-sm text-ink/45"
+                            colspan="5">
+                            @if (isLoading()) {
+                            Loading incidents…
+                            } @else {
+                            No active incidents. Everything's quiet.
+                            }
+                        </td>
                     </tr>
                     }
                 </tbody>

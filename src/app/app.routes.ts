@@ -13,28 +13,16 @@ export const routes: Routes = [
         title: 'Overview — Pulse',
       },
       {
-        path: 'orders',
-        loadComponent: () => import('./pages/orders/orders').then((m) => m.Orders),
-        title: 'Orders — Pulse',
+        path: 'incidents',
+        loadComponent: () => import('./pages/incidents/incidents').then((m) => m.Incidents),
+        title: 'Incidents — Pulse',
       },
-      //   {
-      //     path: "customers",
-      //     loadComponent: () =>
-      //       import("./pages/placeholder/placeholder.component").then(
-      //         (m) => m.PlaceholderComponent,
-      //       ),
-      //     title: "Customers — Pulse",
-      //     data: { name: "Customers" },
-      //   },
-      //   {
-      //     path: "products",
-      //     loadComponent: () =>
-      //       import("./pages/placeholder/placeholder.component").then(
-      //         (m) => m.PlaceholderComponent,
-      //       ),
-      //     title: "Products — Pulse",
-      //     data: { name: "Products" },
-      //   },
+      {
+        path: 'incidents/:id',
+        loadComponent: () =>
+          import('./pages/incident-detail/incident-detail').then((m) => m.IncidentDetail),
+        title: 'Incident — Pulse',
+      },
       //   {
       //     path: "settings",
       //     loadComponent: () =>

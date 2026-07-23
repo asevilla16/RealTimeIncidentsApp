@@ -1,0 +1,110 @@
+@if (incident(); as incident) {
+<div class="flex flex-col gap-6">
+    <div>
+        <a routerLink="/incidents"
+            class="text-xs font-medium text-teal hover:underline">&larr; All
+            incidents</a>
+    </div>
+
+    <div class="card p-6">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <app-severity-pill [severity]="incident.severity" />
+                    <app-incident-status-pill [status]="incident.status" />
+                </div>
+                <h1
+                    class="mt-3 font-display text-xl font-semibold tracking-tight text-ink">
+                    {{ incident.title }}</h1>
+                <p class="mt-2 max-w-2xl text-sm text-ink/60">{{
+                    incident.description }}</p>
+            </div>
+        </div>
+
+        <dl class="mt-6 grid grid-cols-2 gap-4 border-t border-ink/10 pt-5 sm:grid-cols-4">
+            <div>
+                <dt class="text-xs font-medium uppercase tracking-wide text-ink/40">Owner</dt>
+                <dd class="mt-1 text-sm font-medium text-ink">{{
+                    incident.ownerName }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-medium uppercase tracking-wide text-ink/40">Created</dt>
+                <dd class="stat-figure mt-1 text-sm text-ink">{{
+                    incident.createdAt | date: 'MMM d, h:mm a' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-medium uppercase tracking-wide text-ink/40">Last
+                    updated</dt>
+                <dd class="stat-figure mt-1 text-sm text-ink">{{
+                    incident.updatedAt | date: 'MMM d, h:mm a' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-medium uppercase tracking-wide text-ink/40">Resolved</dt>
+                <dd class="stat-figure mt-1 text-sm text-ink">
+                    @if (incident.resolvedAt) {
+                    {{ incident.resolvedAt | date: 'MMM d, h:mm a' }}
+                    } @else {
+                    <span class="text-ink/40">&mdash;</span>
+                    }
+                </dd>
+            </div>
+        </dl>
+    </div>
+
+    <div class="card p-6">
+        <h2 class="font-display text-base font-semibold text-ink">Activity
+            &amp; updates</h2>
+
+        <form class="mt-4 flex flex-col gap-2 sm:flex-row sm:items-start"
+            (ngSubmit)="submitUpdate()">
+            <textarea
+                name="updateMessage"
+                rows="2"
+                placeholder="Post an update…"
+                class="flex-1 resize-none rounded-sm border border-ink/10 bg-white px-3 py-2 text-sm text-ink placeholder:text-ink/35 focus:outline-none focus-visible:outline-2 focus-visible:outline-teal"
+                [ngModel]="updateMessage()"
+                (ngModelChange)="updateMessage.set($event)"></textarea>
+            <button
+                type="submit"
+                [disabled]="!updateMessage().trim() || isPostingUpdate()"
+                class="rounded-sm bg-teal px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-dark disabled:cursor-not-allowed disabled:opacity-40">
+                {{ isPostingUpdate() ? 'Posting…' : 'Post' }}
+            </button>
+        </form>
+
+        @if (isLoadingUpdates()) {
+        <p class="mt-6 flex items-center gap-1.5 text-xs text-ink/45">
+            <svg class="h-3.5 w-3.5 animate-spin text-ink/35" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 3a9 9 0 1 0 9 9" stroke-linecap="round" />
+            </svg>
+            Loading updates…
+        </p>
+        } @else {
+        <ol class="mt-6 flex flex-col gap-5">
+            @for (update of updates(); track update.id) {
+            <li class="flex gap-3 text-sm">
+                <span
+                    class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber"></span>
+                <div class="leading-snug">
+                    <p class="text-ink"><span class="font-medium">{{
+                            update.authorName }}</span></p>
+                    <p class="mt-0.5 text-ink/70">{{ update.message }}</p>
+                    <p class="mt-0.5 text-xs text-ink/40">{{ update.createdAt |
+                        date: 'MMM d, h:mm a' }}</p>
+                </div>
+            </li>
+            } @empty {
+            <li class="text-sm text-ink/45">No updates yet.</li>
+            }
+        </ol>
+        }
+    </div>
+</div>
+} @else {
+<div class="card p-6 text-sm text-ink/60">
+    Incident not found.
+    <a routerLink="/incidents" class="font-medium text-teal hover:underline">Back
+        to all incidents</a>
+</div>
+}
