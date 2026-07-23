@@ -1,5 +1,13 @@
-import { CommonModule } from '@angular/common';
-import { Component, computed, inject, output, signal } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import {
+  afterNextRender,
+  Component,
+  computed,
+  inject,
+  output,
+  PLATFORM_ID,
+  signal,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { Auth } from '../../../auth/services/auth';
 
@@ -13,6 +21,7 @@ export class Navbar {
   menuToggle = output<void>();
 
   private router = inject(Router);
+  private readonly platformId = inject(PLATFORM_ID);
 
   private readonly auth = inject(Auth);
 
@@ -29,9 +38,24 @@ export class Navbar {
 
   menuOpen = signal(false);
 
-  readonly lastSynced = signal(
-    new Date().toLocaleString('en-US', { weekday: 'long', day: 'numeric', month: 'long' }),
-  );
+  // Empty on both server and initial client render so SSR output and the
+  // pre-hydration client DOM match exactly; the real value is only computed
+  // in the browser, after hydration, via afterNextRender. Computing
+  // `new Date()` at construction time would run once on the server (server
+  // clock/timezone) and again on the client during hydration (browser
+  // clock/timezone), which almost always disagree and trips a hydration
+  // content mismatch.
+  readonly lastSynced = signal('');
+
+  constructor() {
+    if (isPlatformBrowser(this.platformId)) {
+      afterNextRender(() => {
+        this.lastSynced.set(
+          new Date().toLocaleString('en-US', { weekday: 'long', day: 'numeric', month: 'long' }),
+        );
+      });
+    }
+  }
 
   toggleMenu() {
     this.menuOpen.update((open) => !open);

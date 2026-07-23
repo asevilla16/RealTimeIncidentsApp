@@ -34,6 +34,7 @@ export class IncidentDetail {
   id = input.required<string>();
 
   incident = computed(() => this.incidentsService.incidents().find((i) => i.id === this.id()));
+  isLoadingIncident = this.incidentsService.isLoading;
 
   private readonly _updates = signal<IncidentUpdate[]>([]);
   readonly updates = this._updates.asReadonly();
